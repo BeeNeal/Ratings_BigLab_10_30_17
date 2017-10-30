@@ -15,19 +15,28 @@ db = SQLAlchemy()
 class User(db.Model):
     """User of ratings website."""
 
+    def __repr__(self):
+        """show info about user"""
+
+        return "<User user_id=%s email=%s>" % (self.user_id, self.email)
+
     __tablename__ = "users"
 
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    email = db.Column(db.String(64), nullable=True)
+    email = db.Column(db.String(64), unique=True, nullable=True)
     password = db.Column(db.String(64), nullable=True)
     age = db.Column(db.Integer, nullable=True)
     zipcode = db.Column(db.String(15), nullable=True)
 
 
-
 # Put your Movie and Rating model classes here.
 class Movie(db.Model):
-    """List of movies with movie data"""
+    """List of movies with movie data."""
+
+    def __repr__(self):
+        """Provide helpful information about movie when printed."""
+
+        return "<Movie movie_id=%s title=%s>" % (self.movie_id, self.title)
 
     __tablename__ = "movies"
 
@@ -40,11 +49,16 @@ class Movie(db.Model):
 class Rating(db.Model):
     """List of user rating data."""
 
+    def __repr__(self):
+        """Provide helpful information about user rating when printed."""
+
+        return "<Rating rating_id=%d score=%d>" % (self.rating_id, self.score)
+
     __tablename__ = "ratings"
 
     rating_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    movie_id = db.Column(db.Integer, foreign_key=True, nullable=False)
-    user_id = db.Column(db.Integer, foreign_key=True, nullable=False)
+    movie_id = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer, nullable=False)
     score = db.Column(db.Integer, nullable=False)
 
 

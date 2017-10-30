@@ -8,6 +8,8 @@ from model import User
 from model import connect_to_db, db
 from server import app
 
+from datetime import datetime
+
 
 def load_users():
     """Load users from u.user into database."""
@@ -36,6 +38,13 @@ def load_users():
 
 def load_movies():
     """Load movies from u.item into database."""
+     for row in open("seed_data/u.item"):
+        row = row.rstrip()
+        movie_data = row.split("|")
+
+        movie_id = movie_data[0]
+
+        # NOTE: still need to unpack the rest of movie_data
 
 
 def load_ratings():
