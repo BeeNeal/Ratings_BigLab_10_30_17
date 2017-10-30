@@ -16,7 +16,7 @@ class User(db.Model):
     """User of ratings website."""
 
     def __repr__(self):
-        """show info about user"""
+        """Provide helpful information about user when printed."""
 
         return "<User user_id=%s email=%s>" % (self.user_id, self.email)
 
@@ -29,7 +29,6 @@ class User(db.Model):
     zipcode = db.Column(db.String(15), nullable=True)
 
 
-# Put your Movie and Rating model classes here.
 class Movie(db.Model):
     """List of movies with movie data."""
 
@@ -50,7 +49,7 @@ class Rating(db.Model):
     """List of user rating data."""
 
     def __repr__(self):
-        """Provide helpful information about user rating when printed."""
+        """Provide helpful information about rating when printed."""
 
         return "<Rating rating_id=%d score=%d>" % (self.rating_id, self.score)
 

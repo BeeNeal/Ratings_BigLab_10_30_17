@@ -38,13 +38,26 @@ def load_users():
 
 def load_movies():
     """Load movies from u.item into database."""
-     for row in open("seed_data/u.item"):
+    for row in open("seed_data/u.item"):
         row = row.rstrip()
         movie_data = row.split("|")
 
-        movie_id = movie_data[0]
-
         # NOTE: still need to unpack the rest of movie_data
+        movie_id = movie_data[0]
+        title =
+        released_at =
+        imdb_url =
+
+        movie = Movie(movie_id=movie_id,
+                      title=title,
+                      released_at=released_at,
+                      imdb_url=imdb_url)
+
+        # We need to add to the session or it won't ever be stored
+        db.session.add(user)
+
+    # Once we're done, we should commit our work
+    db.session.commit()
 
 
 def load_ratings():
