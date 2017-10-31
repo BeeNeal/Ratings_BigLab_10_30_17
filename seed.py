@@ -1,14 +1,14 @@
 """Utility file to seed ratings database from MovieLens data in seed_data/"""
 
 from sqlalchemy import func
-from model import User
+from model import User, Movie, Rating
 # from model import Rating
 # from model import Movie
 
 from model import connect_to_db, db
 from server import app
 
-from datetime import datetime
+import datetime
 
 
 def load_users():
@@ -38,15 +38,27 @@ def load_users():
 
 def load_movies():
     """Load movies from u.item into database."""
+
+    print "Movies"
+
+    # Delete all rows in table, so if we need to run this a second time,
+    # we won't be trying to add duplicate users
+    Movie.query.delete()
+
     for row in open("seed_data/u.item"):
         row = row.rstrip()
         movie_data = row.split("|")
-
         # NOTE: still need to unpack the rest of movie_data
         movie_id = movie_data[0]
-        title =
-        released_at =
-        imdb_url =
+        title = movie_data[1][:-7]
+        imdb_url = movie_data[4]
+
+        released_str = movie_data[2]
+
+        if released_str:
+            released_at = datetime.datetime.strptime(released_str, "%d-%b-%Y")
+        else:
+            released_at = None
 
         movie = Movie(movie_id=movie_id,
                       title=title,
@@ -54,7 +66,7 @@ def load_movies():
                       imdb_url=imdb_url)
 
         # We need to add to the session or it won't ever be stored
-        db.session.add(user)
+        db.session.add(movie)
 
     # Once we're done, we should commit our work
     db.session.commit()
@@ -62,6 +74,31 @@ def load_movies():
 
 def load_ratings():
     """Load ratings from u.data into database."""
+
+    print "Ratings"
+
+    # Delete all rows in table, so if we need to run this a second time,
+    # we won't be trying to add duplicate users
+    Rating.query.delete()
+    query = "SELECT setval('ratings_rating_id_seq', 1)"
+    db.session.execute(query)
+    db.session.commit()
+
+    for row in open("seed_data/u.data"):
+        row = row.rstrip()
+        rating_data = row.split("\t")
+
+        movie_id = rating_data[0]
+        user_id = rating_data[1]
+        score = rating_data[2]
+
+        rating = Rating(movie_id=movie_id,
+                        user_id=user_id,
+                        score=score)
+
+        db.session.add(rating)
+
+    db.session.commit()
 
 
 def set_val_user_id():
@@ -87,4 +124,5 @@ if __name__ == "__main__":
     load_users()
     load_movies()
     load_ratings()
+    # We are adjusting the users_user_id_seq, using the Postgres function setval.
     set_val_user_id()
