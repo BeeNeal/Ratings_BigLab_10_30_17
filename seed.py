@@ -2,8 +2,6 @@
 
 from sqlalchemy import func
 from model import User, Movie, Rating
-# from model import Rating
-# from model import Movie
 
 from model import connect_to_db, db
 from server import app
@@ -29,10 +27,10 @@ def load_users():
                     age=age,
                     zipcode=zipcode)
 
-        # We need to add to the session or it won't ever be stored
+        # Add to the session to be stored.
         db.session.add(user)
 
-    # Once we're done, we should commit our work
+    # Add to database.
     db.session.commit()
 
 
@@ -42,21 +40,23 @@ def load_movies():
     print "Movies"
 
     # Delete all rows in table, so if we need to run this a second time,
-    # we won't be trying to add duplicate users
+    # we won't be trying to add duplicate movies.
     Movie.query.delete()
 
     for row in open("seed_data/u.item"):
         row = row.rstrip()
         movie_data = row.split("|")
-        # NOTE: still need to unpack the rest of movie_data
         movie_id = movie_data[0]
-        title = movie_data[1][:-7]
+        title = movie_data[1][:-7]  # Slice off parenthetical date in title.
         imdb_url = movie_data[4]
 
-        released_str = movie_data[2]
+        released_str = movie_data[2]  # Save date string.
 
+        # If date string (Truthy).
         if released_str:
+            # Convert date string to datetime object, save to variable.
             released_at = datetime.datetime.strptime(released_str, "%d-%b-%Y")
+        # Otherwise, make equal to None.
         else:
             released_at = None
 
@@ -65,10 +65,10 @@ def load_movies():
                       released_at=released_at,
                       imdb_url=imdb_url)
 
-        # We need to add to the session or it won't ever be stored
+        # Add to the session to be stored.
         db.session.add(movie)
 
-    # Once we're done, we should commit our work
+    # Add to database.
     db.session.commit()
 
 
@@ -78,7 +78,7 @@ def load_ratings():
     print "Ratings"
 
     # Delete all rows in table, so if we need to run this a second time,
-    # we won't be trying to add duplicate users
+    # we won't be trying to add duplicate ratings.
     Rating.query.delete()
     query = "SELECT setval('ratings_rating_id_seq', 1)"
     db.session.execute(query)
@@ -95,9 +95,10 @@ def load_ratings():
         rating = Rating(movie_id=movie_id,
                         user_id=user_id,
                         score=score)
-
+        # Add to the session to be stored.
         db.session.add(rating)
 
+    # Add to database.
     db.session.commit()
 
 
