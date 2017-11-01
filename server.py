@@ -23,8 +23,9 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/')
 def index():
     """Homepage."""
-    a = jsonify([1,3])
-    return a
+    # a = jsonify([1,3])
+    return render_template("homepage.html")
+
 
 @app.route('/users')
 def user_list():
@@ -48,11 +49,11 @@ def process_registration():
     email = request.form.get("email")
     password = request.form.get("password")
 
-    email_status = User.query.filter(User.email.in_(email)).all()
+    email_status = User.query.filter(User.email == email).first()
 
-    #check to see if that email exists in our DB
-    #if not, create user (add to DB)
-    if email_status == []:
+    # Check to see if that email exists in DB.
+    # If not, create user (add to DB).
+    if email_status is None:
         user = User(email=email,
                     password=password)
 
@@ -60,16 +61,52 @@ def process_registration():
         db.session.add(user)
 
     else:
-        print "You've already registered with us."
+        flash("You've already registered with us.")
+        return redirect("/login")
 
     db.session.commit()
 
     return redirect("/")
 
 
+@app.route('/login')
+def login_display():
+    """display the login page"""
+
+    return render_template('login.html')
+
+
 @app.route('/login', methods=['POST'])
 def login():
-    """"""
+    """Process login info."""
+
+    # Get form data from login.
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    # Querying database for email taken from login form.
+    user = User.query.filter(User.email == email).first()
+
+    if user and user.password == password:
+        user_id = user.user_id
+        session['user_id'] = user_id
+        flash("Successful login")
+
+        return redirect('/')
+    else:
+        flash("Your email and/or password doesn't match our records")
+        return redirect("/login")
+
+
+@app.route('/logout')
+def logout():
+    """logs user out by removing user_id from session"""
+
+    session.pop('user_id', None)
+    flash("Successfully logged out")
+
+    return redirect("/")
+
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
