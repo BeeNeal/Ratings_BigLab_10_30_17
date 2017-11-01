@@ -67,6 +67,8 @@ class Rating(db.Model):
     rating_id = db.Column(db.Integer,
                           autoincrement=True,
                           primary_key=True)
+    # The parameter passed to ForeignKey() should be a string in the format of
+    # table.column_name.
     movie_id = db.Column(db.Integer,
                          db.ForeignKey('movies.movie_id'),
                          nullable=False)
@@ -74,7 +76,7 @@ class Rating(db.Model):
     # reference another column in another table. The user_id column of ratings
     # refers to the user_id column of users.
     user_id = db.Column(db.Integer,
-                        db.ForeignKey('users.user_id'),  # The parameter passed to ForeignKey() should be a string in the format of “table.column_name”.
+                        db.ForeignKey('users.user_id'),
                         nullable=False)
     score = db.Column(db.Integer,
                       nullable=False)
