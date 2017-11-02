@@ -2,8 +2,9 @@
 
 from jinja2 import StrictUndefined
 
-from flask import (Flask, jsonify, render_template, redirect, request, 
-flash, session)
+from flask import (Flask, jsonify, render_template, redirect, request,
+                   flash, session)
+
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import User, Rating, Movie, connect_to_db, db
@@ -34,6 +35,18 @@ def user_list():
     users = User.query.all()
     return render_template("user_list.html", users=users)
 
+
+@app.route('/users/<int:user_id>')
+def user(user_id):
+    """shows info about individual user."""
+
+    # user_zipcode = db.session.query(User.zipcode).filter(User.user_id == user_id).one()[0]
+    # user_age = db.session.query(User.age).filter(User.user_id == user_id)
+
+    user = User.query.get(user_id)
+
+
+    return render_template("user.html", user=user )
 
 @app.route('/registration')
 def display_registration_form():
