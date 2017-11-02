@@ -33,6 +33,7 @@ def user_list():
     """show list of users."""
 
     users = User.query.all()
+
     return render_template("user_list.html", users=users)
 
 
@@ -46,7 +47,7 @@ def user(user_id):
     user = User.query.get(user_id)
 
 
-    return render_template("user.html", user=user )
+    return render_template("user.html", user=user)
 
 @app.route('/registration')
 def display_registration_form():

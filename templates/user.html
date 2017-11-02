@@ -4,9 +4,17 @@
     <h2>User Info</h2>
     <ul>
           <li>
-                {{ user.age }} ({{ user.zipcode }})
-              </a>
+                <b>Age: </b>{{ user.age }}
           </li>
+          <li>
+               <b>Zipcode: </b>{{ user.zipcode }}
+          </li>
+          <li>
+                {% for rating in user.ratings %}
+                    <li><b>Movie Title: </b>{{ rating.movie.title }} <b>Score: </b>{{ rating.score }}</li>
+<!--                     unpacking in jinja -->
+          </li>
+                {% endfor %}
     </ul>
 
 {% endblock %}
