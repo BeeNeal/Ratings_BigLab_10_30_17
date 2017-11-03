@@ -105,8 +105,8 @@ def login():
         user_id = user.user_id
         session['user_id'] = user_id
         flash("Successful login")
-
-        return redirect('/')
+#trying to figure out how to get following redirect route to redirect to specific user id
+        return redirect('/users/<int:user_id>')
     else:
         flash("Your email and/or password doesn't match our records")
         return redirect("/login")
